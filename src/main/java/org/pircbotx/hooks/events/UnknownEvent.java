@@ -17,8 +17,8 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableMap;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,23 +35,62 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UnknownEvent extends Event {
-	/**
-	 * The raw line that was received from the server.
-	 */
-	protected final String line;
 
-	public UnknownEvent(PircBotX bot, @NonNull String line) {
-		super(bot);
-		this.line = line;
-	}
+/**
+ * The target of the event
+ */
+@Getter
+protected final String target;
 
-	/**
-	 * Responds by sending a <b>raw line</b> to the server.
-	 *
-	 * @param response The response to send
-	 */
-	@Override
-	public void respond(String response) {
-		getBot().sendRaw().rawLine(response);
-	}
+/**
+ * The nickname (if any) of the originating user
+ */
+@Getter
+protected final String nick;
+
+/**
+ * The IRC command that was issued
+ */
+@Getter
+protected final String command;
+
+/**
+ * The raw line that was received from the server.
+ */
+protected final String line;
+/**
+ * The parsed line
+ */
+@Getter
+protected final List<String> parsedLine;
+/**
+ * The IRCv3 tags (if any)
+ */
+@Getter
+protected final ImmutableMap<String, String> tags;
+//
+//public UnknownEvent(PircBotX bot, @NonNull String line) {
+//  super(bot);
+//  this.line = line;
+//}
+
+public UnknownEvent(PircBotX bot, String target, String nick, String command, @NonNull String line, List<String> parsedLine, ImmutableMap<String, String> tags) {
+  super(bot);
+  this.target = target;
+  this.nick = nick;
+  this.command = command;
+  this.line = line;
+  this.parsedLine = parsedLine;
+  this.tags = tags;
+}
+
+/**
+ * Responds by sending a <b>raw line</b> to the server.
+ *
+ * @param response The response to send
+ */
+@Override
+public void respond(String response) {
+  getBot().sendRaw().rawLine(response);
+}
 }
